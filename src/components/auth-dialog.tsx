@@ -14,7 +14,7 @@ export function AuthDialog({open,onOpenChange}:{open:boolean;onOpenChange:(v:boo
   e.preventDefault();setMessage('');
   const f=new FormData(e.currentTarget);const get=(k:string)=>String(f.get(k)??'');
   try{
-   const tokens=signup?(()=>{const d=registerSchema.parse({username:get('username'),phone:get('phone'),password:get('password')});setBusy(true);return playerRegister({data:d});})():(()=>{const d=loginSchema.parse({identifier:get('identifier'),password:get('password')});setBusy(true);return playerLogin({data:d});})();
+   const tokens=signup?(()=>{const d=registerSchema.parse({username:get('username'),phone:get('phone'),password:get('password'),deviceId:deviceId(),ref:get('ref')||storedRef()});setBusy(true);return playerRegister({data:d});})():(()=>{const d=loginSchema.parse({identifier:get('identifier'),password:get('password'),deviceId:deviceId()});setBusy(true);return playerLogin({data:d});})();
    const {error}=await supabase.auth.setSession(await tokens);if(error)throw error;
    onOpenChange(false);
   }catch(err){setMessage(errorText(err));}finally{setBusy(false);}
@@ -48,3 +48,6 @@ export function AuthDialog({open,onOpenChange}:{open:boolean;onOpenChange:(v:boo
   <label className="login-lang"><span className="bd-flag" aria-hidden/><select aria-label="ভাষা" defaultValue="bn"><option value="bn">বাংলা</option></select><ChevronDown size={16}/></label>
  </DialogContent></Dialog>;
 }
+
+function deviceId(){try{let v=localStorage.getItem('ng66-device');if(!v){v=crypto.randomUUID();localStorage.setItem('ng66-device',v);}return v;}catch{return undefined;}}
+function storedRef(){try{const q=new URLSearchParams(location.search).get('ref');if(q)localStorage.setItem('ng66-ref',q);return (q||localStorage.getItem('ng66-ref')||undefined)?.toUpperCase();}catch{return undefined;}}
