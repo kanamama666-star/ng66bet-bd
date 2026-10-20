@@ -32,6 +32,6 @@ export const playerRegister = createServerFn({ method: 'POST' }).inputValidator(
  if (taken) throw new Error('এই ইউজার নেম বা মোবাইল নম্বর আগে থেকেই ব্যবহৃত');
  const email = internalEmail(data.phone);
  const { error } = await supabaseAdmin.auth.admin.createUser({ email, password: data.password, email_confirm: true, user_metadata: { username: data.username, phone: data.phone } });
- if (error) { console.error('register failed', error.message); throw new Error('নিবন্ধন ব্যর্থ হয়েছে, আবার চেষ্টা করুন'); }
+ if (error) throw new Error(/weak|pwned|guess/i.test(error.message) ? 'এই পাসওয়ার্ডটি খুব সহজ, আরও শক্তিশালী পাসওয়ার্ড দিন' : 'নিবন্ধন ব্যর্থ হয়েছে, আবার চেষ্টা করুন');
  return signIn(email, data.password);
 });
