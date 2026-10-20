@@ -642,6 +642,15 @@ export type Database = {
         }
         Returns: undefined
       }
+      admin_manage_player_access: {
+        Args: {
+          _frozen: boolean
+          _reason: string
+          _user_id: string
+          _vip_level: number
+        }
+        Returns: undefined
+      }
       credit_referral: {
         Args: {
           _amount: number

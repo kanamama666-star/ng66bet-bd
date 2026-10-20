@@ -99,6 +99,13 @@
       "when": 1792488770972,
       "tag": "0013_verified_owner_admin_bootstrap",
       "breakpoints": true
+    },
+    {
+      "idx": 14,
+      "version": "7",
+      "when": 1792488941932,
+      "tag": "0014_admin_vip_fraud_controls",
+      "breakpoints": true
     }
   ]
 }
