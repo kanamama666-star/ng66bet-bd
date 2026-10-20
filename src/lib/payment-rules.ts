@@ -1,7 +1,7 @@
 import { z } from 'zod';
 export const paymentSchema = z.object({
  kind: z.enum(['deposit','withdrawal']),
- method: z.enum(['bKash','Nagad']),
+ method: z.enum(['bKash','Nagad','Rocket']),
  amount: z.coerce.number().positive('Amount must be greater than zero').max(999999999999.99).refine(v => Math.abs(v*100-Math.round(v*100))<0.0001,'Use no more than two decimal places'),
  account_number: z.string().trim().regex(/^01[3-9]\d{8}$/, 'Enter a valid Bangladesh mobile number'),
  transaction_id: z.string().trim().max(80).optional(),
