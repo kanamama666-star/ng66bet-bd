@@ -505,6 +505,7 @@ export type Database = {
       }
       distribute_mystery_bonus: { Args: never; Returns: number }
       distribute_vip_period_bonus: { Args: { _kind: string }; Returns: number }
+      distribute_vip_yearly_bonus: { Args: never; Returns: number }
       edit_account: {
         Args: {
           _phone: string

@@ -71,6 +71,13 @@
       "when": 1792485321653,
       "tag": "0009_vip_rewards_engine",
       "breakpoints": true
+    },
+    {
+      "idx": 10,
+      "version": "7",
+      "when": 1792485706835,
+      "tag": "0010_vip_yearly_bonus",
+      "breakpoints": true
     }
   ]
 }
