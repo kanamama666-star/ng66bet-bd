@@ -127,6 +127,47 @@ export type Database = {
           },
         ]
       }
+      mystery_bonus_awards: {
+        Row: {
+          amount: number
+          created_at: string
+          id: string
+          period: string
+          phone: string
+          user_id: string
+          username: string
+          vip_level: number
+        }
+        Insert: {
+          amount: number
+          created_at?: string
+          id?: string
+          period: string
+          phone: string
+          user_id: string
+          username: string
+          vip_level: number
+        }
+        Update: {
+          amount?: number
+          created_at?: string
+          id?: string
+          period?: string
+          phone?: string
+          user_id?: string
+          username?: string
+          vip_level?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "mystery_bonus_awards_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       payment_gateways: {
         Row: {
           account_number: string
@@ -216,6 +257,41 @@ export type Database = {
           },
         ]
       }
+      player_messages: {
+        Row: {
+          body: string
+          created_at: string
+          id: string
+          read: boolean
+          title: string
+          user_id: string
+        }
+        Insert: {
+          body: string
+          created_at?: string
+          id?: string
+          read?: boolean
+          title: string
+          user_id: string
+        }
+        Update: {
+          body?: string
+          created_at?: string
+          id?: string
+          read?: boolean
+          title?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "player_messages_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       profiles: {
         Row: {
           balance: number
@@ -226,6 +302,7 @@ export type Database = {
           status: string
           username: string
           vip: boolean
+          vip_level: number
         }
         Insert: {
           balance?: number
@@ -236,6 +313,7 @@ export type Database = {
           status?: string
           username?: string
           vip?: boolean
+          vip_level?: number
         }
         Update: {
           balance?: number
@@ -246,6 +324,7 @@ export type Database = {
           status?: string
           username?: string
           vip?: boolean
+          vip_level?: number
         }
         Relationships: []
       }
@@ -345,6 +424,7 @@ export type Database = {
         }
         Returns: undefined
       }
+      distribute_mystery_bonus: { Args: never; Returns: number }
       edit_account: {
         Args: {
           _phone: string
@@ -363,6 +443,7 @@ export type Database = {
         }
         Returns: boolean
       }
+      locked_bonus_amount: { Args: { _user_id: string }; Returns: number }
       player_identity_taken: {
         Args: { _handle: string; _phone: string }
         Returns: boolean
