@@ -8,7 +8,7 @@ describe('Transparent demo rules',()=>{
 });
 describe('Payment request rules',()=>{
  const deposit={kind:'deposit',method:'bKash',amount:100,account_number:'01712345678',transaction_id:'ABC123'};
- it('accepts bKash and Nagad only',()=>{expect(paymentSchema.safeParse(deposit).success).toBe(true);expect(paymentSchema.safeParse({...deposit,method:'Nagad'}).success).toBe(true);expect(paymentSchema.safeParse({...deposit,method:'Other'}).success).toBe(false);});
+ it('accepts bKash, Nagad and Rocket only',()=>{expect(paymentSchema.safeParse(deposit).success).toBe(true);expect(paymentSchema.safeParse({...deposit,method:'Nagad'}).success).toBe(true);expect(paymentSchema.safeParse({...deposit,method:'Rocket'}).success).toBe(true);expect(paymentSchema.safeParse({...deposit,method:'Other'}).success).toBe(false);});
  it('requires TxID for deposits',()=>{expect(paymentSchema.safeParse({...deposit,transaction_id:''}).success).toBe(false);});
  it('rejects zero and fractional-paisa amounts',()=>{expect(paymentSchema.safeParse({...deposit,amount:0}).success).toBe(false);expect(paymentSchema.safeParse({...deposit,amount:1.001}).success).toBe(false);});
  it('requires image screenshots',()=>{expect(validateReceipt({size:100,type:'image/png'})).toBe(null);expect(validateReceipt({size:100,type:'text/html'})).not.toBe(null);});

@@ -1,0 +1,61 @@
+CREATE TYPE public.app_role AS ENUM ('admin','user');
+CREATE TABLE public.user_roles(id uuid PRIMARY KEY DEFAULT gen_random_uuid(),user_id uuid NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,role public.app_role NOT NULL,UNIQUE(user_id,role));
+GRANT SELECT ON public.user_roles TO authenticated; GRANT ALL ON public.user_roles TO service_role;
+ALTER TABLE public.user_roles ENABLE ROW LEVEL SECURITY;
+CREATE FUNCTION public.has_role(_user_id uuid,_role public.app_role) RETURNS boolean LANGUAGE sql STABLE SECURITY DEFINER SET search_path=public AS $$ SELECT EXISTS(SELECT 1 FROM public.user_roles r JOIN public.profiles p ON p.id=r.user_id WHERE r.user_id=_user_id AND r.role=_role AND p.status='active') $$;
+REVOKE ALL ON FUNCTION public.has_role(uuid,public.app_role) FROM PUBLIC,anon; GRANT EXECUTE ON FUNCTION public.has_role(uuid,public.app_role) TO authenticated,service_role;
+CREATE POLICY roles_read ON public.user_roles FOR SELECT TO authenticated USING(user_id=auth.uid() OR public.has_role(auth.uid(),'admin'));
+CREATE POLICY admin_profiles_read ON public.profiles FOR SELECT TO authenticated USING(public.has_role(auth.uid(),'admin'));
+CREATE POLICY admin_requests_read ON public.payment_requests FOR SELECT TO authenticated USING(public.has_role(auth.uid(),'admin'));
+CREATE TABLE public.account_activity(id uuid PRIMARY KEY DEFAULT gen_random_uuid(),user_id uuid NOT NULL REFERENCES public.profiles(id),actor_id uuid NOT NULL,kind text NOT NULL,amount numeric,balance_after numeric,reason text NOT NULL,created_at timestamptz NOT NULL DEFAULT now());
+GRANT SELECT ON public.account_activity TO authenticated; GRANT ALL ON public.account_activity TO service_role; ALTER TABLE public.account_activity ENABLE ROW LEVEL SECURITY;
+CREATE POLICY admin_activity_read ON public.account_activity FOR SELECT TO authenticated USING(public.has_role(auth.uid(),'admin'));
+CREATE TABLE public.financial_ledger(id uuid PRIMARY KEY DEFAULT gen_random_uuid(),user_id uuid NOT NULL REFERENCES public.profiles(id),request_id uuid NOT NULL REFERENCES public.payment_requests(id),kind text NOT NULL,amount numeric NOT NULL,balance_after numeric NOT NULL,actor_id uuid NOT NULL,created_at timestamptz NOT NULL DEFAULT now(),UNIQUE(request_id,kind));
+GRANT SELECT ON public.financial_ledger TO authenticated; GRANT ALL ON public.financial_ledger TO service_role; ALTER TABLE public.financial_ledger ENABLE ROW LEVEL SECURITY;
+CREATE POLICY admin_ledger_read ON public.financial_ledger FOR SELECT TO authenticated USING(public.has_role(auth.uid(),'admin'));
+ALTER TABLE public.payment_requests DROP CONSTRAINT payment_requests_method_check; ALTER TABLE public.payment_requests ADD CONSTRAINT payment_requests_method_check CHECK(method IN ('bKash','Nagad','Rocket'));
+ALTER TABLE public.payment_gateways DROP CONSTRAINT payment_gateways_method_check; ALTER TABLE public.payment_gateways ADD CONSTRAINT payment_gateways_method_check CHECK(method IN ('bKash','Nagad','Rocket'));
+GRANT INSERT,UPDATE,DELETE ON public.payment_gateways,public.content_banners,public.site_notices TO authenticated;
+CREATE POLICY admin_gateway_manage ON public.payment_gateways FOR ALL TO authenticated USING(public.has_role(auth.uid(),'admin')) WITH CHECK(public.has_role(auth.uid(),'admin'));
+CREATE POLICY admin_banner_manage ON public.content_banners FOR ALL TO authenticated USING(public.has_role(auth.uid(),'admin')) WITH CHECK(public.has_role(auth.uid(),'admin'));
+CREATE POLICY admin_notice_manage ON public.site_notices FOR ALL TO authenticated USING(public.has_role(auth.uid(),'admin')) WITH CHECK(public.has_role(auth.uid(),'admin'));
+CREATE POLICY admin_receipt_read ON storage.objects FOR SELECT TO authenticated USING(bucket_id='payment-receipts' AND public.has_role(auth.uid(),'admin'));
+CREATE POLICY admin_banner_storage_manage ON storage.objects FOR ALL TO authenticated USING(bucket_id='admin-banners' AND public.has_role(auth.uid(),'admin')) WITH CHECK(bucket_id='admin-banners' AND public.has_role(auth.uid(),'admin'));
+CREATE FUNCTION public.adjust_account_balance(_user_id uuid,_amount numeric,_operation text,_reason text,_request_id uuid) RETURNS void LANGUAGE plpgsql SECURITY DEFINER SET search_path=public AS $$ DECLARE b numeric; pending numeric; old_event public.account_activity%ROWTYPE; BEGIN
+IF NOT public.has_role(auth.uid(),'admin') THEN RAISE EXCEPTION 'Administrator access required'; END IF;
+IF _request_id IS NULL OR _amount IS NULL OR _amount<=0 OR _amount>10000000 OR _amount!=round(_amount,2) OR _operation IS NULL OR _operation NOT IN ('credit','debit') OR _reason IS NULL OR char_length(trim(_reason)) NOT BETWEEN 3 AND 500 THEN RAISE EXCEPTION 'Invalid balance adjustment'; END IF;
+PERFORM pg_advisory_xact_lock(hashtextextended(_request_id::text,0)); SELECT * INTO old_event FROM public.account_activity WHERE id=_request_id;
+IF FOUND THEN IF old_event.actor_id IS DISTINCT FROM auth.uid() OR old_event.user_id IS DISTINCT FROM _user_id OR old_event.kind IS DISTINCT FROM _operation OR old_event.amount IS DISTINCT FROM _amount OR old_event.reason IS DISTINCT FROM trim(_reason) THEN RAISE EXCEPTION 'Request ID already used'; END IF; RETURN; END IF;
+SELECT balance INTO b FROM public.profiles WHERE id=_user_id FOR UPDATE; IF NOT FOUND THEN RAISE EXCEPTION 'Account not found'; END IF;
+SELECT coalesce(sum(amount),0) INTO pending FROM public.payment_requests WHERE user_id=_user_id AND kind='withdrawal' AND status='pending' AND NOT reserved;
+b:=b+CASE WHEN _operation='credit' THEN _amount ELSE -_amount END; IF b<pending THEN RAISE EXCEPTION 'Balance is committed to pending withdrawals'; END IF;
+UPDATE public.profiles SET balance=b WHERE id=_user_id; INSERT INTO public.account_activity(id,user_id,actor_id,kind,amount,balance_after,reason) VALUES(_request_id,_user_id,auth.uid(),_operation,_amount,b,trim(_reason)); END $$;
+CREATE FUNCTION public.edit_account(_user_id uuid,_username text,_phone text,_vip boolean,_status text,_reason text) RETURNS void LANGUAGE plpgsql SECURITY DEFINER SET search_path=public AS $$ BEGIN
+IF NOT public.has_role(auth.uid(),'admin') THEN RAISE EXCEPTION 'Administrator access required'; END IF;
+IF _username IS NULL OR char_length(trim(_username)) NOT BETWEEN 2 AND 60 OR _phone IS NULL OR char_length(_phone)>20 OR _vip IS NULL OR _status IS NULL OR _status NOT IN ('active','banned') OR _reason IS NULL OR char_length(trim(_reason)) NOT BETWEEN 3 AND 500 THEN RAISE EXCEPTION 'Invalid account details'; END IF;
+IF _status='banned' AND EXISTS(SELECT 1 FROM public.user_roles WHERE user_id=_user_id AND role='admin') THEN RAISE EXCEPTION 'Remove administrator role before banning'; END IF;
+UPDATE public.profiles SET username=trim(_username),phone=_phone,vip=_vip,status=_status WHERE id=_user_id; IF NOT FOUND THEN RAISE EXCEPTION 'Account not found'; END IF;
+INSERT INTO public.account_activity(user_id,actor_id,kind,reason) VALUES(_user_id,auth.uid(),'profile_edit',trim(_reason)); END $$;
+CREATE FUNCTION public.review_payment_request(_id uuid,_decision text,_reason text,_payout_reference text DEFAULT '') RETURNS void LANGUAGE plpgsql SECURITY DEFINER SET search_path=public AS $$ DECLARE r public.payment_requests%ROWTYPE; b numeric; target uuid; BEGIN
+IF NOT public.has_role(auth.uid(),'admin') THEN RAISE EXCEPTION 'Administrator access required'; END IF;
+IF _decision IS NULL OR _decision NOT IN ('approved','rejected') OR _reason IS NULL OR char_length(trim(_reason)) NOT BETWEEN 3 AND 500 THEN RAISE EXCEPTION 'A review reason is required'; END IF;
+SELECT user_id INTO target FROM public.payment_requests WHERE id=_id; SELECT balance INTO b FROM public.profiles WHERE id=target FOR UPDATE; IF NOT FOUND THEN RAISE EXCEPTION 'Account not found'; END IF;
+SELECT * INTO r FROM public.payment_requests WHERE id=_id FOR UPDATE; IF r.status!='pending' THEN RAISE EXCEPTION 'Request already reviewed'; END IF;
+IF NOT(r.kind='withdrawal' AND _decision='approved') AND coalesce(trim(_payout_reference),'')!='' THEN RAISE EXCEPTION 'Payout reference only applies to approved withdrawals'; END IF;
+IF _decision='approved' THEN
+IF r.kind='deposit' THEN IF coalesce(char_length(trim(r.transaction_id)),0)<3 OR coalesce(char_length(trim(r.proof_path)),0)=0 THEN RAISE EXCEPTION 'Transaction ID and screenshot required'; END IF; b:=b+r.amount;
+ELSE IF coalesce(char_length(trim(_payout_reference)),0) NOT BETWEEN 3 AND 100 THEN RAISE EXCEPTION 'Completed payout reference required'; END IF; IF NOT r.reserved THEN IF b<r.amount THEN RAISE EXCEPTION 'Insufficient balance'; END IF; b:=b-r.amount; END IF; END IF;
+UPDATE public.profiles SET balance=b WHERE id=r.user_id;
+INSERT INTO public.financial_ledger(user_id,request_id,kind,amount,balance_after,actor_id) VALUES(r.user_id,r.id,CASE WHEN r.kind='deposit' THEN 'deposit' ELSE 'withdrawal_paid' END,CASE WHEN r.kind='deposit' THEN r.amount ELSE -r.amount END,b,auth.uid());
+ELSIF r.kind='withdrawal' AND r.reserved THEN b:=b+r.amount; UPDATE public.profiles SET balance=b WHERE id=r.user_id; INSERT INTO public.financial_ledger(user_id,request_id,kind,amount,balance_after,actor_id) VALUES(r.user_id,r.id,'withdrawal_refund',r.amount,b,auth.uid()); END IF;
+UPDATE public.payment_requests SET status=_decision,reviewed_by=auth.uid(),review_reason=trim(_reason),payout_reference=nullif(trim(_payout_reference),''),reviewed_at=now() WHERE id=_id; END $$;
+CREATE FUNCTION public.set_admin_role(_user_id uuid,_enabled boolean,_reason text) RETURNS void LANGUAGE plpgsql SECURITY DEFINER SET search_path=public AS $$ BEGIN
+PERFORM pg_advisory_xact_lock(668800); IF NOT public.has_role(auth.uid(),'admin') THEN RAISE EXCEPTION 'Administrator access required'; END IF;
+IF _enabled IS NULL OR _reason IS NULL OR char_length(trim(_reason)) NOT BETWEEN 3 AND 500 THEN RAISE EXCEPTION 'Reason required'; END IF;
+IF _user_id=auth.uid() THEN RAISE EXCEPTION 'Cannot change your own administrator role'; END IF;
+IF NOT EXISTS(SELECT 1 FROM public.profiles WHERE id=_user_id AND status='active') THEN RAISE EXCEPTION 'Active account required'; END IF;
+IF _enabled THEN INSERT INTO public.user_roles(user_id,role) VALUES(_user_id,'admin') ON CONFLICT DO NOTHING; ELSE DELETE FROM public.user_roles WHERE user_id=_user_id AND role='admin'; END IF;
+INSERT INTO public.account_activity(user_id,actor_id,kind,reason) VALUES(_user_id,auth.uid(),'role_change',trim(_reason)); END $$;
+REVOKE ALL ON FUNCTION public.adjust_account_balance(uuid,numeric,text,text,uuid),public.edit_account(uuid,text,text,boolean,text,text),public.review_payment_request(uuid,text,text,text),public.set_admin_role(uuid,boolean,text) FROM PUBLIC,anon;
+GRANT EXECUTE ON FUNCTION public.adjust_account_balance(uuid,numeric,text,text,uuid),public.edit_account(uuid,text,text,boolean,text,text),public.review_payment_request(uuid,text,text,text),public.set_admin_role(uuid,boolean,text) TO authenticated;
+ALTER PUBLICATION supabase_realtime ADD TABLE public.payment_gateways,public.account_activity,public.financial_ledger,public.user_roles;

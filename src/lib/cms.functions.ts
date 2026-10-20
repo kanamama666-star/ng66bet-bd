@@ -18,5 +18,12 @@ export const getCms = createServerFn({ method: 'GET' }).handler(async () => {
  ]);
  const error = notices.error || banners.error || gateways.error;
  if (error) throw new Error('Content could not be loaded');
- return { notices: notices.data ?? [], banners: banners.data ?? [], gateways: gateways.data ?? [] };
+ const visibleBanners = await Promise.all((banners.data ?? []).map(async banner => {
+  if(banner.storage_path.startsWith('https://')) return banner;
+  const {data} = await client.storage.from('admin-banners').createSignedUrl(banner.storage_path,3600);
+  const browserUrl=import.meta.env.VITE_SUPABASE_URL;
+  const image=data?.signedUrl && browserUrl ? data.signedUrl.replace(url,browserUrl) : '';
+  return {...banner,storage_path:image};
+ }));
+ return { notices: notices.data ?? [], banners: visibleBanners.filter(b=>b.storage_path), gateways: gateways.data ?? [] };
 });

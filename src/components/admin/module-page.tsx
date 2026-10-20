@@ -1,0 +1,2 @@
+import type {ReactNode} from 'react';import {AdminGate,useAdmin} from './admin-context';
+export function ModulePage({title,bn,subtitle,children}:{title:string;bn:string;subtitle:string;children:ReactNode}){const {t}=useAdmin();return <div className="dashboard-enter"><p className="mb-2 text-[11px] font-semibold uppercase tracking-[0.1em] text-primary">Admin workspace</p><h1 className="text-2xl font-extrabold sm:text-3xl">{t(title,bn)}</h1><p className="mb-7 mt-2 text-sm text-muted-foreground">{subtitle}</p><AdminGate>{children}</AdminGate></div>;}

@@ -1,4 +1,7 @@
 # Portal rebuild
+- [ ] Import all Admin Panel modules locally under `/admin` with protected admin roles.
+- [ ] Connect admin actions to local players/payments/content and add Rocket throughout payment forms and gateways.
+- [ ] Verify admin authorization and player-to-admin payment/content flows.
 - [x] Add `/admin` as a direct redirect to the existing Admin Panel; verified HTTP 302 and exact destination.
 - [x] Rebuild mobile-first lobby, categories, banners, and account/wallet views.
 - [x] Set up Cloud profiles, authentication, transaction requests and private screenshots.

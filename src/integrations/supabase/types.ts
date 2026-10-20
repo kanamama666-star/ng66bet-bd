@@ -14,6 +14,47 @@ export type Database = {
   }
   public: {
     Tables: {
+      account_activity: {
+        Row: {
+          actor_id: string
+          amount: number | null
+          balance_after: number | null
+          created_at: string
+          id: string
+          kind: string
+          reason: string
+          user_id: string
+        }
+        Insert: {
+          actor_id: string
+          amount?: number | null
+          balance_after?: number | null
+          created_at?: string
+          id?: string
+          kind: string
+          reason: string
+          user_id: string
+        }
+        Update: {
+          actor_id?: string
+          amount?: number | null
+          balance_after?: number | null
+          created_at?: string
+          id?: string
+          kind?: string
+          reason?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "account_activity_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       content_banners: {
         Row: {
           active: boolean
@@ -37,6 +78,54 @@ export type Database = {
           title?: string
         }
         Relationships: []
+      }
+      financial_ledger: {
+        Row: {
+          actor_id: string
+          amount: number
+          balance_after: number
+          created_at: string
+          id: string
+          kind: string
+          request_id: string
+          user_id: string
+        }
+        Insert: {
+          actor_id: string
+          amount: number
+          balance_after: number
+          created_at?: string
+          id?: string
+          kind: string
+          request_id: string
+          user_id: string
+        }
+        Update: {
+          actor_id?: string
+          amount?: number
+          balance_after?: number
+          created_at?: string
+          id?: string
+          kind?: string
+          request_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "financial_ledger_request_id_fkey"
+            columns: ["request_id"]
+            isOneToOne: false
+            referencedRelation: "payment_requests"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "financial_ledger_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       payment_gateways: {
         Row: {
@@ -178,15 +267,73 @@ export type Database = {
         }
         Relationships: []
       }
+      user_roles: {
+        Row: {
+          id: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Insert: {
+          id?: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Update: {
+          id?: string
+          role?: Database["public"]["Enums"]["app_role"]
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      adjust_account_balance: {
+        Args: {
+          _amount: number
+          _operation: string
+          _reason: string
+          _request_id: string
+          _user_id: string
+        }
+        Returns: undefined
+      }
+      edit_account: {
+        Args: {
+          _phone: string
+          _reason: string
+          _status: string
+          _user_id: string
+          _username: string
+          _vip: boolean
+        }
+        Returns: undefined
+      }
+      has_role: {
+        Args: {
+          _role: Database["public"]["Enums"]["app_role"]
+          _user_id: string
+        }
+        Returns: boolean
+      }
+      review_payment_request: {
+        Args: {
+          _decision: string
+          _id: string
+          _payout_reference?: string
+          _reason: string
+        }
+        Returns: undefined
+      }
+      set_admin_role: {
+        Args: { _enabled: boolean; _reason: string; _user_id: string }
+        Returns: undefined
+      }
     }
     Enums: {
-      [_ in never]: never
+      app_role: "admin" | "user"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -313,6 +460,8 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      app_role: ["admin", "user"],
+    },
   },
 } as const

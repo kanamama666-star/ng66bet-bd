@@ -22,6 +22,20 @@
       "when": 1792478859619,
       "tag": "0002_restrict_trigger_function_execution",
       "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1792479887560,
+      "tag": "0003_local_admin_management",
+      "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1792479934315,
+      "tag": "0004_public_active_banner_read",
+      "breakpoints": true
     }
   ]
 }

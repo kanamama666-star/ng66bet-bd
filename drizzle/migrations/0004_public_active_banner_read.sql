@@ -1,0 +1,1 @@
+CREATE POLICY active_banner_image_read ON storage.objects FOR SELECT TO anon,authenticated USING(bucket_id='admin-banners' AND EXISTS(SELECT 1 FROM public.content_banners WHERE storage_path=name AND active));
