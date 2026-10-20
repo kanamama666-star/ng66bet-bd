@@ -1,4 +1,5 @@
 # Portal rebuild
+- [ ] Add protected VIP-level and fraud-freeze controls for administrators; preserve audit records and bonus safety checks.
 - [x] Add secure administrator email registration/login and verified-owner role bootstrap for the chosen email; invalid login denied and credential tests passed.
 - [ ] Verify chosen owner's signed-in administrator access — blocked until kanamama666@gmail.com registers and confirms email ownership; no account with that email exists yet.
 - [x] Import all Admin Panel modules locally under `/admin` with protected admin roles.
