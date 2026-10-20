@@ -34,6 +34,7 @@ export function AuthDialog({open,onOpenChange}:{open:boolean;onOpenChange:(v:boo
     <label className="login-field"><UserRound/><input name="username" placeholder="ইউজার নেম" aria-label="ইউজার নেম" required maxLength={13} autoComplete="username" onChange={e=>setTyped(e.target.value.length>0)}/></label>
     {!typed&&<p className="login-hint">{HINT}</p>}
     <label className="login-field"><Phone/><input name="phone" type="tel" inputMode="numeric" placeholder="মোবাইল নম্বর" aria-label="মোবাইল নম্বর" required maxLength={11} autoComplete="tel"/></label>
+    <label className="login-field"><Gift/><input name="ref" placeholder="আমন্ত্রণ কোড (ঐচ্ছিক)" aria-label="আমন্ত্রণ কোড" maxLength={8} autoCapitalize="characters"/></label>
    </>:<>
     <label className="login-field"><UserRound/><input name="identifier" placeholder="ইউজার নেম অথবা মোবাইল নম্বর" aria-label="ইউজার নেম অথবা মোবাইল নম্বর" required maxLength={20} autoComplete="username" onChange={e=>setTyped(e.target.value.length>0)}/></label>
     {!typed&&<p className="login-hint">{HINT}</p>}
