@@ -29,3 +29,16 @@
 .game-tag{font-size:8px}.tag-jili,.tag-pg,.tag-jdb,.tag-fc{background:var(--secondary);color:var(--primary);border:1px solid var(--primary)}
 .game-name{display:flex;flex-direction:column;align-items:flex-start;gap:2px}.game-bn{font-size:13px;font-weight:700}.game-en{font-size:10px;color:var(--muted-foreground);font-weight:500}
 .game-details small{font-size:8px}
+.games-grid{gap:14px 10px}
+.game-art{aspect-ratio:1/1;border-radius:14px;border:none;display:grid;place-items:center;padding:10px;background:radial-gradient(circle at 50% 30%,oklch(0.78 0.17 var(--hue)) 0%,oklch(0.48 0.19 var(--hue)) 55%,oklch(0.24 0.1 var(--hue)) 100%)}
+.game-art::after{background:linear-gradient(transparent 60%,color-mix(in oklch,var(--background) 55%,transparent))}
+.game-logo{position:relative;z-index:1;text-align:center;font-family:var(--font-display);font-weight:900;font-style:italic;font-size:clamp(15px,3.4vw,26px);line-height:1.05;color:var(--primary);text-shadow:0 2px 0 oklch(0.35 0.12 40),0 4px 10px oklch(0.1 0 0 / .7);-webkit-text-stroke:1px oklch(0.3 0.1 40);transition:transform .3s}
+.game-card:hover .game-logo{transform:scale(1.07)}
+.game-tag{top:auto;bottom:0;right:0;left:auto;border-radius:10px 0 0 0;font-size:10px;font-weight:900;font-style:italic;padding:4px 8px}
+.tag-jili{background:var(--brand-red);color:var(--foreground);border:none}.tag-pg{background:var(--foreground);color:var(--background);border:none}
+.favorite-button{background:transparent!important;color:var(--primary)!important;width:30px;height:30px;top:6px;right:6px}.favorite-button svg{width:24px;height:24px;stroke-width:2.2}.favorite-button.is-favorite svg{fill:var(--primary)}
+.game-play{opacity:0!important;bottom:auto;top:50%;left:20%;right:20%;transform:translateY(-50%)!important}
+.game-card:hover .game-play,.game-card:focus-within .game-play{opacity:1!important}
+.game-name{width:100%;justify-content:center;text-align:center;font-size:clamp(13px,2.6vw,17px);font-weight:600;margin-top:8px;color:var(--foreground)}
+.game-logo{color:var(--foreground);-webkit-text-stroke:0;text-shadow:0 0 1px oklch(0.25 0.1 40),0 2px 0 oklch(0.55 0.16 70),0 3px 0 oklch(0.3 0.1 40),0 6px 14px oklch(0.1 0 0 / .8);font-size:clamp(16px,3.8vw,28px)}
+.game-card .game-name{display:block;text-align:center;align-items:center}
