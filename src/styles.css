@@ -40,3 +40,5 @@
 .game-play{opacity:0!important;bottom:auto;top:50%;left:20%;right:20%;transform:translateY(-50%)!important}
 .game-card:hover .game-play,.game-card:focus-within .game-play{opacity:1!important}
 .game-name{width:100%;justify-content:center;text-align:center;font-size:clamp(13px,2.6vw,17px);font-weight:600;margin-top:8px;color:var(--foreground)}
+.game-logo{color:var(--foreground);-webkit-text-stroke:0;text-shadow:0 0 1px oklch(0.25 0.1 40),0 2px 0 oklch(0.55 0.16 70),0 3px 0 oklch(0.3 0.1 40),0 6px 14px oklch(0.1 0 0 / .8);font-size:clamp(16px,3.8vw,28px)}
+.game-card .game-name{display:block;text-align:center;align-items:center}
