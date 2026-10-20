@@ -19,14 +19,14 @@ async function signIn(email: string, password: string) {
  return { access_token: data.session.access_token, refresh_token: data.session.refresh_token };
 }
 
-export const playerLogin = createServerFn({ method: 'POST' }).inputValidator((d: unknown) => loginSchema.parse(d)).handler(async ({ data }) => {
+export const playerLogin = createServerFn({ method: 'POST' }).validator((d: unknown) => loginSchema.parse(d)).handler(async ({ data }) => {
  const { supabaseAdmin } = await import('@/integrations/supabase/client.server');
  const { data: email } = await supabaseAdmin.rpc('player_login_email', { _identifier: data.identifier });
  if (!email) throw new Error('ইউজার নেম/মোবাইল নম্বর অথবা পাসওয়ার্ড ভুল');
  return signIn(email, data.password);
 });
 
-export const playerRegister = createServerFn({ method: 'POST' }).inputValidator((d: unknown) => registerSchema.parse(d)).handler(async ({ data }) => {
+export const playerRegister = createServerFn({ method: 'POST' }).validator((d: unknown) => registerSchema.parse(d)).handler(async ({ data }) => {
  const { supabaseAdmin } = await import('@/integrations/supabase/client.server');
  const { data: taken } = await supabaseAdmin.rpc('player_identity_taken', { _handle: data.username, _phone: data.phone });
  if (taken) throw new Error('এই ইউজার নেম বা মোবাইল নম্বর আগে থেকেই ব্যবহৃত');
