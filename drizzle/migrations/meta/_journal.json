@@ -92,6 +92,13 @@
       "when": 1792487840712,
       "tag": "0012_auto_freeze_referral_fraud",
       "breakpoints": true
+    },
+    {
+      "idx": 13,
+      "version": "7",
+      "when": 1792488770972,
+      "tag": "0013_verified_owner_admin_bootstrap",
+      "breakpoints": true
     }
   ]
 }
