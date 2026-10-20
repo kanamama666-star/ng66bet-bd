@@ -1,4 +1,6 @@
 # Portal rebuild
+- [ ] Build the screenshot-matched member dashboard and connect wallet, bonuses, missions, referral, inbox, records, security and feedback.
+- [ ] Configure actual APK download and daily check-in reward / wagering rebate rules — waiting for an APK and reward amounts; real wagering is unavailable in demo games.
 - [x] Add protected VIP-level and fraud-freeze controls for administrators; preserve audit records and bonus safety checks. Validation tests passed; owner-session verification remains blocked below.
 - [x] Add secure administrator email registration/login and verified-owner role bootstrap for the chosen email; invalid login denied and credential tests passed.
 - [ ] Verify chosen owner's signed-in administrator access — blocked until kanamama666@gmail.com registers and confirms email ownership; no account with that email exists yet.
