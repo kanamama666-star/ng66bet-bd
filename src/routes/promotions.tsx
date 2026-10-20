@@ -3,6 +3,9 @@ import { createFileRoute, Link } from '@tanstack/react-router';
 import { queryOptions, useSuspenseQuery } from '@tanstack/react-query';
 import { useState } from 'react';
 import { ChevronLeft, ChevronRight, Home, Gift, Wallet, Heart, UserRound } from 'lucide-react';
+import { useQuery } from '@tanstack/react-query';
+import { usePlayer } from '@/hooks/use-player';
+import { supabase } from '@/integrations/supabase/client';
 import { getPromotions } from '@/lib/promotions.functions';
 import mystery from '@/assets/promo-mystery.jpg';
 import vip from '@/assets/promo-vip.jpg';
@@ -31,6 +34,7 @@ function PromotionsPage() {
  const [open, setOpen] = useState<string | null>(null);
  const [detail, setDetail] = useState<string | null>(null);
  const detailPromo = data.find(p => p.id === detail);
+ if (detailPromo?.theme === 'invite') return <div className="promo-page"><header className="promo-top"><button onClick={() => setDetail(null)} aria-label="Back to promotions" className="promo-back"><ChevronLeft /></button><h1>Promotion</h1></header><InviteDetail /></div>;
  if (detailPromo?.theme === 'vip') return <div className="promo-page"><header className="promo-top"><button onClick={() => setDetail(null)} aria-label="Back to promotions" className="promo-back"><ChevronLeft /></button><h1>Promotion</h1></header><VipDetail /></div>;
  if (detailPromo?.theme === 'mystery') return <div className="promo-page"><header className="promo-top"><button onClick={() => setDetail(null)} aria-label="Back to promotions" className="promo-back"><ChevronLeft /></button><h1>Promotion</h1></header><MysteryDetail /></div>;
  const list = filter === 'all' ? data : data.filter(p => p.category === filter);
@@ -47,7 +51,7 @@ function PromotionsPage() {
       {p.subline && <p>{p.subline}</p>}
      </div>
     </div>
-    <div className="promo-foot"><h3>{p.title}</h3><button className="promo-more" onClick={() => p.theme === 'mystery' || p.theme === 'vip' ? setDetail(p.id) : setOpen(open === p.id ? null : p.id)} aria-expanded={open === p.id}>More <ChevronRight /></button></div>
+    <div className="promo-foot"><h3>{p.title}</h3><button className="promo-more" onClick={() => p.theme === 'mystery' || p.theme === 'vip' || p.theme === 'invite' ? setDetail(p.id) : setOpen(open === p.id ? null : p.id)} aria-expanded={open === p.id}>More <ChevronRight /></button></div>
     {open === p.id && p.details && <p className="promo-details">{p.details}</p>}
    </article>)}
   </main>
@@ -100,6 +104,48 @@ function VipDetail() {
    <li>আপনি যদি আপনার সদস্য অ্যাকাউন্ট/পাসওয়ার্ড ভুলে যান তাহলে আপনার অ্যাকাউন্টের তথ্য পুনরুদ্ধার করতে সাহায্য করার জন্য অনুগ্রহ করে "<Y>24-ঘন্টা অনলাইন গ্রাহক পরিষেবা</Y>" এর সাথে যোগাযোগ করুন;</li>
    <li>কার্যক্রমে সদস্যদের অংশগ্রহণ সিস্টেম দ্বারা স্বয়ংক্রিয়ভাবে গণনা করা হয় যদি কোন আপত্তি থাকে <Y>NG66 Bet</Y> বাজি এর তদন্তের ফলাফল প্রাধান্য পাবে।</li>
    <li><Y>NG66 Bet</Y> বাজি যেকোনো সময় এই প্রচারটি পরিবর্তন বন্ধ বা বাতিল করার অধিকার সংরক্ষণ করে।</li>
+  </ol>
+ </article>;
+}
+
+const milestones: [number, number][] = [[1,300],[2,300],[3,300],[4,300],[5,300],[10,1500],[15,1500],[20,1500],[30,3000],[40,3000],[50,3000],[60,3000],[70,3000],[80,3000],[90,3000],[100,3000],[150,15000],[200,15000],[250,15000],[300,15000],[350,15000],[400,15000],[450,15000],[500,15000],[600,30000],[700,30000],[800,30000],[1000,60000],[1500,150000],[2000,150000],[2500,150000],[3000,150000],[4000,300000],[5000,300000],[6000,300000],[7000,300000],[8000,300000],[9000,300000],[10000,300000],[11000,300000],[12000,300000],[13000,300000],[14000,300000],[15000,300000],[20000,1500000],[25000,1500000],[30000,1500000],[35000,1500000],[40000,1500000],[50000,3000000],[60000,3000000],[70000,3000000],[80000,3000000],[90000,3000000],[100000,3000000]];
+const inr = (n: number) => n.toLocaleString('en-IN');
+function MyInvite() {
+ const { user, profile } = usePlayer();
+ const stats = useQuery({ queryKey: ['my-referrals', user?.id], enabled: !!user, queryFn: async () => {
+  const [r, w] = await Promise.all([supabase.from('referrals').select('status').eq('referrer_id', user!.id), supabase.from('referral_rewards').select('amount').eq('referrer_id', user!.id)]);
+  const rows = r.data ?? [];
+  return { total: rows.length, valid: rows.filter(x => x.status === 'valid').length, earned: (w.data ?? []).reduce((a, x) => a + Number(x.amount), 0) };
+ } });
+ const [copied, setCopied] = useState(false);
+ if (!user || !profile?.referral_code) return <p className="invite-box">আপনার ব্যক্তিগত আমন্ত্রণ লিংক পেতে লগইন করুন।</p>;
+ const link = `${typeof window !== 'undefined' ? window.location.origin : ''}/?ref=${profile.referral_code}`;
+ return <div className="invite-box">
+  <p>আপনার আমন্ত্রণ কোড: <Y>{profile.referral_code}</Y></p>
+  <div className="invite-link"><input readOnly value={link} aria-label="আমন্ত্রণ লিংক" /><button className="promo-more" onClick={() => { void navigator.clipboard.writeText(link); setCopied(true); }}>{copied ? 'কপি হয়েছে' : 'কপি'}</button></div>
+  <p>মোট আমন্ত্রণ: <Y>{stats.data?.total ?? 0}</Y> · বৈধ: <Y>{stats.data?.valid ?? 0}</Y> · মোট আয়: <Y>৳{inr(stats.data?.earned ?? 0)}</Y></p>
+ </div>;
+}
+function InviteDetail() {
+ return <article className="mystery-detail">
+  <MyInvite />
+  <p><Y>ইভেন্টের বিবরণ :</Y><br />যত বেশি বন্ধু আমন্ত্রণ করবেন, তত বেশি আয় করবেন। শূন্য বিনিয়োগে মিলিয়ন টাকা আয়ের সুযোগ! আপনার বন্ধুদের <Y>NG66 Bet</Y>-এ যোগ দিতে আমন্ত্রণ জানান এবং অনলাইনে বিনোদনের উত্তেজনা এবং সম্পদ ভাগাভাগি করুন!</p>
+  <table className="vip-table"><thead><tr><th>জমার পরিমাণ</th><th>বৈধ বাজি</th><th>আমন্ত্রণ বোনাস</th></tr></thead><tbody><tr><td>≥300</td><td>3,000</td><td>300</td></tr><tr><td colSpan={3}>বোনাস <Y>3,00,00,000</Y> টাকা পর্যন্ত</td></tr></tbody></table>
+  <table className="vip-table"><thead><tr><th>বৈধ আমন্ত্রণ</th><th>বোনাস</th></tr></thead><tbody>{milestones.map(([c, b]) => <tr key={c}><td>{inr(c)}</td><td>{inr(b)}</td></tr>)}</tbody></table>
+  <p><Y>NG66 Bet</Y>-এ আপনাকে স্বাগতম। আপনার ব্যক্তিগত লিঙ্কটি অ্যাপ্লিকেশন এবং সামাজিক নেটওয়ার্কের মাধ্যমে শেয়ার করুন: ওয়েবসাইট, <Y>Facebook, Instagram, TikTok, Telegram, WhatsApp, YouTube</Y> ইত্যাদি। দ্রুত সবাইকে আমন্ত্রণ করুন! আপনার ব্যক্তিগত লিঙ্কের মাধ্যমে নিবন্ধন করা সদস্যরা আপনার সরাসরি এজেন্ট হবে। তবে মনে রাখবেন, আপনি যে নতুন সদস্যদের আমন্ত্রণ করবেন তারা অবশ্যই প্রকৃত এবং বৈধ হতে হবে।<br />
+  <b className="promo-num">1</b>. দি আপনার বন্ধুরা প্রথমবার সফলভাবে জমা করে, তাহলে আপনি <Y>300</Y> টাকা বোনাস উপার্জন করতে পারবেন। আপনি যত বেশি আমন্ত্রণ করবেন, আপনার আয় তত বেশি হবে।<br />
+  <b className="promo-num">2</b>.আপনার বন্ধুরা যদি মাত্র <Y>1 টাকা</Y> বা তার বেশি বাজি ধরেন, তাহলে আপনি উচ্চ কমিশন উপভোগ করতে পারবেন! আজীবনের জন্য আপনার আমন্ত্রিতদের থেকে সর্বোচ্চ <Y>1.0%</Y> কমিশন উপার্জন করুন। এটি একটি আজীবনের আমন্ত্রণ প্রক্রিয়া!<br />
+  <Y>প্রবেশ করুন</Y> → আপনার "<Y>অ্যাকাউন্ট</Y>"-এ লগইন করুন - "<Y>বোনাস</Y>" - "<Y>বন্ধুকে আমন্ত্রণ করুন</Y>" - "<Y>পুরস্কার</Y>" - "<Y>সংগ্রহ করুন</Y>" এ ক্লিক করুন।<br />স্লট মেশিন/ফিশিং/স্পোর্টস গেমের কমিশন হার নিচে তালিকাভুক্ত করা হলো।:</p>
+  <h2><Y>2. ডিপোজিট কমিশন :</Y></h2>
+  <table className="vip-table"><thead><tr><th>ডিপোজিট কমিশন</th><th>শর্তাবলী</th><th>ডেলিভারি পদ্ধতি</th></tr></thead><tbody><tr><td>আয় করুন <Y>0.5%</Y></td><td>প্রতিটি আমন্ত্রিত খেলোয়াড়ের জমা</td><td>স্বয়ংক্রিয়ভাবে বিতরণ করুন</td></tr></tbody></table>
+  <h2><Y>3. বাজি কমিশন :</Y></h2>
+  <table className="vip-table"><thead><tr><th>অফলাইন সদস্য বাজি</th><th>স্লট/মাছ ধরা/স্পোর্টস</th></tr></thead><tbody><tr><td>1+</td><td>1.0%</td></tr></tbody></table>
+  <p><Y>উদাহরণ:</Y> আপনার <Y>100</Y> জন অফলাইন সদস্য রয়েছে এবং প্রতিদিন তাদের মোট বাজির আনুমানিক মূল্য <Y>1,00,00,000</Y> টাকা। সেদিন আপনার প্রাপ্ত কমিশন হবে: <Y>1,00,00,000 × 1.0% = 1,00,000</Y> টাকা। মাসে <Y>30,00,000</Y> টাকা আয় করা খুবই সম্ভব।<br />
+  <Y>মনে করিয়ে দেওয়া :</Y><br />একই আইপি, একই ডিভাইস, নাম, bKash/Nagad/Rocket অ্যাকাউন্ট ইত্যাদি তথ্য দিয়ে থাকা সদস্য অ্যাকাউন্ট শুধুমাত্র একবার অংশগ্রহণ করতে পারবে। নিয়ম লঙ্ঘনকারীরা এই বোনাসগুলি উপভোগ করতে পারবে না। যদি কোনো ব্যবহারকারী বা দল সন্দেহজনক বা অনিয়মিত কার্যক্রমে যুক্ত হয়, তবে তাদের এবং/অথবা তাদের দলের অ্যাকাউন্ট বাজেয়াপ্ত করা হবে এবং অ্যাকাউন্ট স্থায়ীভাবে ফ্রিজ করে দেওয়া হবে।<br />কমিশন প্রতি ঘন্টায় স্বয়ংক্রিয়ভাবে আপনার অ্যাকাউন্টে জমা করা হবে।</p>
+  <h2><Y>ইভেন্টের নিয়মাবলী:</Y></h2>
+  <ol>
+   <li>যদি আপনি আপনার সদস্যপদ অ্যাকাউন্ট/পাসওয়ার্ড ভুলে যান, দয়া করে "<Y>24-ঘণ্টা অনলাইন গ্রাহক পরিষেবা</Y>" এর সাথে যোগাযোগ করুন এবং আপনার অ্যাকাউন্ট তথ্য পুনরুদ্ধার করুন।</li>
+   <li><Y>NG66 Bet</Y> যে কোনো সময় প্রচার কার্যক্রম পরিবর্তন, স্থগিত বা বাতিল করার অধিকার সংরক্ষণ করে।</li>
   </ol>
  </article>;
 }
