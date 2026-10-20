@@ -1,5 +1,5 @@
 import { useState, type FormEvent } from 'react';
-import { Phone, Lock, Eye, EyeOff, ChevronDown, UserRound } from 'lucide-react';
+import { Phone, Lock, Eye, EyeOff, ChevronDown, UserRound, Gift } from 'lucide-react';
 import { Link } from '@tanstack/react-router';
 import { supabase } from '@/integrations/supabase/client';
 import { lovable } from '@/integrations/lovable';
