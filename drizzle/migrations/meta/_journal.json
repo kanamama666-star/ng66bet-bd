@@ -85,6 +85,13 @@
       "when": 1792486502158,
       "tag": "0011_referral_engine",
       "breakpoints": true
+    },
+    {
+      "idx": 12,
+      "version": "7",
+      "when": 1792487840712,
+      "tag": "0012_auto_freeze_referral_fraud",
+      "breakpoints": true
     }
   ]
 }
