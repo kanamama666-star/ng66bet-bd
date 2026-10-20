@@ -689,6 +689,10 @@ export type Database = {
         }
         Returns: boolean
       }
+      is_authorized_admin_email: {
+        Args: { _confirmed_at: string; _email: string }
+        Returns: boolean
+      }
       locked_bonus_amount: { Args: { _user_id: string }; Returns: number }
       player_identity_taken: {
         Args: { _handle: string; _phone: string }
