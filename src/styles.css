@@ -23,3 +23,9 @@
 :root,.dark{--burgundy:oklch(.31 .055 355);--info:oklch(.76 .12 235);--info-soft:oklch(.25 .035 235);--warning:oklch(.82 .13 85);--warning-soft:oklch(.27 .035 85);--danger-soft:oklch(.25 .04 25);--success-soft:oklch(.25 .04 155);}
 .admin-workspace{--primary:oklch(.76 .15 355);--primary-foreground:oklch(.98 .005 355);--accent:oklch(.27 .04 355);min-height:100dvh;}
 .metric-card{transition:transform 180ms ease;border-radius:8px}.metric-value{font-variant-numeric:tabular-nums}.announcement-marquee{display:inline-block;animation:notice-drift 25s linear infinite}.admin-workspace main{min-width:0}.admin-workspace h1{overflow-wrap:anywhere}
+.games-grid{grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:12px}
+.game-art{cursor:pointer;box-shadow:0 6px 18px color-mix(in oklch,var(--background) 60%,transparent)}
+.game-play{opacity:1!important;transform:none!important;font-size:10px}
+.game-tag{font-size:8px}.tag-jili,.tag-pg,.tag-jdb,.tag-fc{background:var(--secondary);color:var(--primary);border:1px solid var(--primary)}
+.game-name{display:flex;flex-direction:column;align-items:flex-start;gap:2px}.game-bn{font-size:13px;font-weight:700}.game-en{font-size:10px;color:var(--muted-foreground);font-weight:500}
+.game-details small{font-size:8px}
