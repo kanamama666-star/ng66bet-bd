@@ -409,6 +409,74 @@ export type Database = {
         }
         Relationships: []
       }
+      vip_bonus_awards: {
+        Row: {
+          amount: number
+          created_at: string
+          id: string
+          kind: string
+          level: number
+          period: string
+          user_id: string
+        }
+        Insert: {
+          amount: number
+          created_at?: string
+          id?: string
+          kind: string
+          level: number
+          period: string
+          user_id: string
+        }
+        Update: {
+          amount?: number
+          created_at?: string
+          id?: string
+          kind?: string
+          level?: number
+          period?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "vip_bonus_awards_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      vip_tiers: {
+        Row: {
+          level: number
+          monthly_bonus: number
+          monthly_mission: number
+          required_turnover: number
+          upgrade_bonus: number
+          weekly_bonus: number
+          weekly_mission: number
+        }
+        Insert: {
+          level: number
+          monthly_bonus: number
+          monthly_mission?: number
+          required_turnover: number
+          upgrade_bonus: number
+          weekly_bonus: number
+          weekly_mission: number
+        }
+        Update: {
+          level?: number
+          monthly_bonus?: number
+          monthly_mission?: number
+          required_turnover?: number
+          upgrade_bonus?: number
+          weekly_bonus?: number
+          weekly_mission?: number
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
@@ -424,7 +492,19 @@ export type Database = {
         }
         Returns: undefined
       }
+      credit_vip_bonus: {
+        Args: {
+          _amount: number
+          _kind: string
+          _label: string
+          _level: number
+          _period: string
+          _user_id: string
+        }
+        Returns: boolean
+      }
       distribute_mystery_bonus: { Args: never; Returns: number }
+      distribute_vip_period_bonus: { Args: { _kind: string }; Returns: number }
       edit_account: {
         Args: {
           _phone: string
@@ -449,6 +529,11 @@ export type Database = {
         Returns: boolean
       }
       player_login_email: { Args: { _identifier: string }; Returns: string }
+      player_turnover: {
+        Args: { _from: string; _to: string; _user_id: string }
+        Returns: number
+      }
+      refresh_vip_level: { Args: { _user_id: string }; Returns: undefined }
       review_payment_request: {
         Args: {
           _decision: string
