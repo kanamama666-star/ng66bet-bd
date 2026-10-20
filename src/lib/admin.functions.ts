@@ -2,6 +2,7 @@ import { createServerFn } from '@tanstack/react-start';
 import { z } from 'zod';
 import { requireSupabaseAuth } from '@/integrations/supabase/auth-middleware';
 import { adjustmentSchema, editUserSchema, gatewaySchema, reviewSchema, noticeSchema } from './admin-validation';
+import {playerAccessSchema} from './admin-access-rules';
 
 export const getAdminAccess = createServerFn({method:'POST'}).middleware([requireSupabaseAuth]).handler(async ({context}) => {
  const {data,error}=await context.supabase.rpc('has_role',{_user_id:context.userId,_role:'admin'});
@@ -49,3 +50,4 @@ export const saveNotice = createServerFn({method:'POST'}).middleware([requireSup
 });
 
 export const setAdminRole = createServerFn({method:'POST'}).middleware([requireSupabaseAuth]).inputValidator(input=>z.object({id:z.string().uuid(),enabled:z.boolean(),reason:z.string().trim().min(3).max(500)}).parse(input)).handler(async({data,context})=>{const {error}=await context.supabase.rpc('set_admin_role',{_user_id:data.id,_enabled:data.enabled,_reason:data.reason});if(error)throw new Error(error.message);return {success:true};});
+export const managePlayerAccess=createServerFn({method:'POST'}).middleware([requireSupabaseAuth]).inputValidator(input=>playerAccessSchema.parse(input)).handler(async({data,context})=>{const {error}=await context.supabase.rpc('admin_manage_player_access',{_user_id:data.id,_vip_level:data.vipLevel,_frozen:data.frozen,_reason:data.reason});if(error)throw new Error(error.message);return {success:true};});
