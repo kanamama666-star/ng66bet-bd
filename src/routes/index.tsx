@@ -11,7 +11,7 @@ import { GameDialog } from '@/components/game-dialog';
 import { AccountDialog } from '@/components/account-dialog';
 import { usePlayer } from '@/hooks/use-player';
 import { cmsQuery } from '@/lib/cms-query';
-import { games,type Game } from '@/lib/portal-data';
+import { games,popularIds,type Game } from '@/lib/portal-data';
 import vaultBanner from '@/assets/vault-banner.jpg';
 export const Route = createFileRoute('/')({
  head:()=>({meta:[{title:'NG66 | Velvet Vault — Game Lobby'},{name:'description',content:'Explore the Velvet Vault game lobby, transparent demo games, VIP profiles and your NG66 wallet.'},{property:'og:title',content:'NG66 | Velvet Vault — Game Lobby'},{property:'og:description',content:'Discover your next favorite game in the Velvet Vault demo lobby.'},{property:'og:type',content:'website'},{name:'twitter:card',content:'summary_large_image'}]}),
@@ -24,7 +24,7 @@ function Portal(){
  const banners=cms.banners.length?cms.banners.map(b=>({title:b.title,image:b.storage_path.startsWith('https://')?b.storage_path:vaultBanner,eyebrow:'FROM THE VAULT',copy:'Discover what’s new in Velvet Vault.'})):[{title:'Welcome to\nVelvet Vault',image:vaultBanner,eyebrow:'YOUR NEXT GREAT GAME STARTS HERE',copy:'A world of games. A touch of luxury.'},{title:'Find your\nnext favorite',image:vaultBanner,eyebrow:'EXPLORE THE COLLECTION',copy:'From classic slots to sky-high adventures.'},{title:'Take flight\nwith Aviator',image:games.find(g=>g.id==='aviator')?.image??vaultBanner,eyebrow:'PLAY WITHOUT THE PRESSURE',copy:'Transparent demo rounds. Endless possibilities.'}];
  useEffect(()=>{const timer=setInterval(()=>setSlide(s=>(s+1)%banners.length),6500);return()=>clearInterval(timer);},[banners.length]);
  const banner=banners[slide%banners.length]??{title:'Welcome to Velvet Vault',image:vaultBanner,eyebrow:'FROM THE VAULT',copy:'Discover your next favorite game.'};
- const filtered=games.filter(g=>(category==='Popular'||g.category===category)&&g.title.toLowerCase().includes(search.toLowerCase())&&(!favoriteView||favorites.includes(g.id)));
+ const filtered=games.filter(g=>(category==='Popular'?popularIds.has(g.id):g.category===category)&&g.title.toLowerCase().includes(search.toLowerCase())&&(!favoriteView||favorites.includes(g.id)));
  function openAccount(view:'profile'|'wallet'){if(!user)setAuth(true);else setAccount(view);}
  function openPayment(kind:'deposit'|'withdrawal'){if(!user)setAuth(true);else {setAccount(null);setPayment(kind);}}
  function selectCategory(name:string){setCategory(name);setFavoriteView(false);setMenu(false);}
