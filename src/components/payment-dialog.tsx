@@ -23,7 +23,7 @@ export function PaymentDialog({kind,onClose}:{kind:'deposit'|'withdrawal'|null;o
   try{
    let proof_path:string|null=null;
    if(kind==='deposit'&&file){const ext=file.type==='image/jpeg'?'jpg':file.type==='image/png'?'png':'webp';proof_path=`${user.id}/${crypto.randomUUID()}.${ext}`;const upload=await supabase.storage.from('payment-receipts').upload(proof_path,file,{contentType:file.type});if(upload.error)throw upload.error;}
-   const {error:requestError}=await supabase.from('payment_requests').insert({...parsed.data,user_id:user.id,transaction_id:kind==='deposit'?parsed.data.transaction_id:null,proof_path});
+   const {error:requestError}=await supabase.from('payment_requests').insert({...parsed.data,user_id:user.id,transaction_id:kind==='deposit'?(parsed.data.transaction_id??null):null,proof_path});
    if(requestError)throw requestError;
    queryClient.invalidateQueries({queryKey:['transactions']});setDone(true);
   }catch(e){setError(e instanceof Error?e.message:'Unable to submit request');}finally{setBusy(false);}
