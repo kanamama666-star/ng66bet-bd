@@ -50,6 +50,13 @@
       "when": 1792483846846,
       "tag": "0006_promotions",
       "breakpoints": true
+    },
+    {
+      "idx": 7,
+      "version": "7",
+      "when": 1792484851715,
+      "tag": "0007_mystery_bonus",
+      "breakpoints": true
     }
   ]
 }
