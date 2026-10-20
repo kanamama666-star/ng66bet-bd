@@ -14,7 +14,170 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      content_banners: {
+        Row: {
+          active: boolean
+          created_at: string
+          id: string
+          storage_path: string
+          title: string
+        }
+        Insert: {
+          active?: boolean
+          created_at?: string
+          id?: string
+          storage_path: string
+          title: string
+        }
+        Update: {
+          active?: boolean
+          created_at?: string
+          id?: string
+          storage_path?: string
+          title?: string
+        }
+        Relationships: []
+      }
+      payment_gateways: {
+        Row: {
+          account_number: string
+          account_type: string
+          active: boolean
+          id: string
+          method: string
+          updated_at: string
+        }
+        Insert: {
+          account_number: string
+          account_type?: string
+          active?: boolean
+          id?: string
+          method: string
+          updated_at?: string
+        }
+        Update: {
+          account_number?: string
+          account_type?: string
+          active?: boolean
+          id?: string
+          method?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      payment_requests: {
+        Row: {
+          account_number: string
+          amount: number
+          created_at: string
+          id: string
+          kind: string
+          method: string
+          payout_reference: string | null
+          proof_path: string | null
+          reserved: boolean
+          review_reason: string | null
+          reviewed_at: string | null
+          reviewed_by: string | null
+          status: string
+          transaction_id: string | null
+          user_id: string
+        }
+        Insert: {
+          account_number?: string
+          amount: number
+          created_at?: string
+          id?: string
+          kind: string
+          method: string
+          payout_reference?: string | null
+          proof_path?: string | null
+          reserved?: boolean
+          review_reason?: string | null
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          status?: string
+          transaction_id?: string | null
+          user_id: string
+        }
+        Update: {
+          account_number?: string
+          amount?: number
+          created_at?: string
+          id?: string
+          kind?: string
+          method?: string
+          payout_reference?: string | null
+          proof_path?: string | null
+          reserved?: boolean
+          review_reason?: string | null
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          status?: string
+          transaction_id?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "payment_requests_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      profiles: {
+        Row: {
+          balance: number
+          created_at: string
+          id: string
+          phone: string
+          status: string
+          username: string
+          vip: boolean
+        }
+        Insert: {
+          balance?: number
+          created_at?: string
+          id: string
+          phone?: string
+          status?: string
+          username?: string
+          vip?: boolean
+        }
+        Update: {
+          balance?: number
+          created_at?: string
+          id?: string
+          phone?: string
+          status?: string
+          username?: string
+          vip?: boolean
+        }
+        Relationships: []
+      }
+      site_notices: {
+        Row: {
+          active: boolean
+          id: string
+          message: string
+          updated_at: string
+        }
+        Insert: {
+          active?: boolean
+          id: string
+          message?: string
+          updated_at?: string
+        }
+        Update: {
+          active?: boolean
+          id?: string
+          message?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
