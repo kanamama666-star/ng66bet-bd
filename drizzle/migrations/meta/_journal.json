@@ -1,0 +1,27 @@
+{
+  "version": "7",
+  "dialect": "postgresql",
+  "entries": [
+    {
+      "idx": 0,
+      "version": "7",
+      "when": 1792478546116,
+      "tag": "0000_portal_accounts_and_requests",
+      "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1792478573314,
+      "tag": "0001_secure_payment_submission",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1792478859619,
+      "tag": "0002_restrict_trigger_function_execution",
+      "breakpoints": true
+    }
+  ]
+}
