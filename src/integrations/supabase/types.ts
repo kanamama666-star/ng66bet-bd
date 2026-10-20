@@ -292,13 +292,49 @@ export type Database = {
           },
         ]
       }
+      player_signals: {
+        Row: {
+          created_at: string
+          device_id: string
+          id: string
+          ip: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          device_id?: string
+          id?: string
+          ip?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          device_id?: string
+          id?: string
+          ip?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "player_signals_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       profiles: {
         Row: {
           balance: number
           created_at: string
+          flag_reason: string | null
+          flagged: boolean
           handle: string | null
           id: string
           phone: string
+          referral_code: string | null
+          referred_by: string | null
           status: string
           username: string
           vip: boolean
@@ -307,9 +343,13 @@ export type Database = {
         Insert: {
           balance?: number
           created_at?: string
+          flag_reason?: string | null
+          flagged?: boolean
           handle?: string | null
           id: string
           phone?: string
+          referral_code?: string | null
+          referred_by?: string | null
           status?: string
           username?: string
           vip?: boolean
@@ -318,15 +358,27 @@ export type Database = {
         Update: {
           balance?: number
           created_at?: string
+          flag_reason?: string | null
+          flagged?: boolean
           handle?: string | null
           id?: string
           phone?: string
+          referral_code?: string | null
+          referred_by?: string | null
           status?: string
           username?: string
           vip?: boolean
           vip_level?: number
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "profiles_referred_by_fkey"
+            columns: ["referred_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       promotions: {
         Row: {
@@ -369,6 +421,104 @@ export type Database = {
           title?: string
         }
         Relationships: []
+      }
+      referral_milestones: {
+        Row: {
+          bonus: number
+          valid_count: number
+        }
+        Insert: {
+          bonus: number
+          valid_count: number
+        }
+        Update: {
+          bonus?: number
+          valid_count?: number
+        }
+        Relationships: []
+      }
+      referral_rewards: {
+        Row: {
+          amount: number
+          created_at: string
+          id: string
+          kind: string
+          milestone: number | null
+          referred_id: string | null
+          referrer_id: string
+          source_request_id: string | null
+        }
+        Insert: {
+          amount: number
+          created_at?: string
+          id?: string
+          kind: string
+          milestone?: number | null
+          referred_id?: string | null
+          referrer_id: string
+          source_request_id?: string | null
+        }
+        Update: {
+          amount?: number
+          created_at?: string
+          id?: string
+          kind?: string
+          milestone?: number | null
+          referred_id?: string | null
+          referrer_id?: string
+          source_request_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "referral_rewards_referrer_id_fkey"
+            columns: ["referrer_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      referrals: {
+        Row: {
+          created_at: string
+          qualified_at: string | null
+          reason: string | null
+          referred_id: string
+          referrer_id: string
+          status: string
+        }
+        Insert: {
+          created_at?: string
+          qualified_at?: string | null
+          reason?: string | null
+          referred_id: string
+          referrer_id: string
+          status?: string
+        }
+        Update: {
+          created_at?: string
+          qualified_at?: string | null
+          reason?: string | null
+          referred_id?: string
+          referrer_id?: string
+          status?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "referrals_referred_id_fkey"
+            columns: ["referred_id"]
+            isOneToOne: true
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "referrals_referrer_id_fkey"
+            columns: ["referrer_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       site_notices: {
         Row: {
@@ -492,6 +642,18 @@ export type Database = {
         }
         Returns: undefined
       }
+      credit_referral: {
+        Args: {
+          _amount: number
+          _kind: string
+          _milestone: number
+          _msg: string
+          _referred: string
+          _referrer: string
+          _req: string
+        }
+        Returns: boolean
+      }
       credit_vip_bonus: {
         Args: {
           _amount: number
@@ -504,6 +666,7 @@ export type Database = {
         Returns: boolean
       }
       distribute_mystery_bonus: { Args: never; Returns: number }
+      distribute_referral_commission: { Args: never; Returns: number }
       distribute_vip_period_bonus: { Args: { _kind: string }; Returns: number }
       distribute_vip_yearly_bonus: { Args: never; Returns: number }
       edit_account: {
@@ -517,6 +680,7 @@ export type Database = {
         }
         Returns: undefined
       }
+      evaluate_referral: { Args: { _referred: string }; Returns: undefined }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]
@@ -533,6 +697,14 @@ export type Database = {
       player_turnover: {
         Args: { _from: string; _to: string; _user_id: string }
         Returns: number
+      }
+      record_player_signal: {
+        Args: { _device: string; _ip: string; _user_id: string }
+        Returns: undefined
+      }
+      referral_fraud_reason: {
+        Args: { _referred: string; _referrer: string }
+        Returns: string
       }
       refresh_vip_level: { Args: { _user_id: string }; Returns: undefined }
       review_payment_request: {

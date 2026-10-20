@@ -78,6 +78,13 @@
       "when": 1792485706835,
       "tag": "0010_vip_yearly_bonus",
       "breakpoints": true
+    },
+    {
+      "idx": 11,
+      "version": "7",
+      "when": 1792486502158,
+      "tag": "0011_referral_engine",
+      "breakpoints": true
     }
   ]
 }
