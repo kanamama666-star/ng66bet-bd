@@ -45,3 +45,23 @@
 .game-art{padding:0;place-items:end center}
 .game-art>img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
 .game-logo{font-size:clamp(12px,2.6vw,19px);padding:0 6px 22px;align-self:end}
+.login-sheet{text-align:center;gap:14px}
+.login-brand{font-family:var(--font-display);font-weight:900;font-size:40px;line-height:1;color:var(--primary);letter-spacing:-1px}.login-brand span{color:var(--foreground)}
+.login-title{font-size:30px;font-weight:800;text-align:center}
+.login-form{display:flex;flex-direction:column;gap:10px;text-align:left}
+.login-field{display:flex;align-items:center;gap:12px;height:54px;padding:0 14px;border:1.5px solid var(--primary);border-left:8px solid var(--primary);border-radius:6px;background:var(--foreground);color:var(--primary)}
+.login-field input{flex:1;min-width:0;background:transparent;border:0;outline:none;font-size:16px;color:var(--background)}
+.login-field input::placeholder{color:color-mix(in oklch,var(--background) 55%,transparent)}
+.login-field-dark{background:var(--background)}.login-field-dark input{color:var(--foreground)}.login-field-dark input::placeholder{color:var(--muted-foreground)}
+.login-field>svg{width:24px;height:24px;flex-shrink:0}
+.login-eye{color:var(--primary);display:grid;place-items:center}
+.login-hint{color:var(--destructive);font-size:12px;line-height:1.5;margin:-2px 0 4px}
+.login-options{display:flex;justify-content:space-between;align-items:center;font-size:15px;margin:8px 0}
+.login-remember{display:flex;align-items:center;gap:8px}.login-remember input{width:20px;height:20px;accent-color:var(--primary)}
+.login-submit{height:52px;border-radius:999px;font-size:20px;font-weight:800;color:var(--primary-foreground);background:linear-gradient(180deg,color-mix(in oklch,var(--primary) 55%,var(--foreground)) 0%,var(--primary) 45%,color-mix(in oklch,var(--primary) 80%,var(--background)) 100%);box-shadow:0 0 18px color-mix(in oklch,var(--primary) 55%,transparent)}
+.login-submit:disabled{opacity:.6}
+.login-message{color:var(--primary);font-size:13px}
+.login-switch{font-size:15px}.login-switch button{color:var(--primary);font-weight:600}
+.login-social{display:flex;gap:8px;justify-content:center}
+.login-lang{display:inline-flex;align-items:center;gap:8px;margin:0 auto;color:var(--primary)}.login-lang select{background:transparent;color:var(--foreground);font-size:15px;appearance:none;outline:none}
+.bd-flag{width:26px;height:26px;border-radius:50%;background:radial-gradient(circle at 45% 50%,var(--brand-red) 0 38%,var(--brand-green) 40%)}
