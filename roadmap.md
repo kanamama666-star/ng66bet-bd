@@ -1,4 +1,5 @@
 # Portal rebuild
+- [x] Add `/admin` as a direct redirect to the existing Admin Panel; verified HTTP 302 and exact destination.
 - [x] Rebuild mobile-first lobby, categories, banners, and account/wallet views.
 - [x] Set up Cloud profiles, authentication, transaction requests and private screenshots.
 - [x] Implement transparent play-only games with isolated demo credits.
