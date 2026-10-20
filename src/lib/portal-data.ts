@@ -51,4 +51,6 @@ export const games = [
   g('fortune-dragon', 'Fortune Dragon', 'ভাগ্যবান ড্রাগন', 'Slots', pharaoh, '', 'PG SOFT', 'slot'),
   g('jackpot-joker', 'Jackpot Joker', 'জ্যাকপট জোকার', 'Slots', luckyCat, '', 'JDB', 'slot'),
 ];
+// The first 31 entries are the Popular lineup from the reference screenshots.
+export const popularIds = new Set(games.slice(0, 31).map(x => x.id));
 export type Game = typeof games[number];
