@@ -1,13 +1,40 @@
+import c_ace from '@/assets/cover-ace.jpg';
+import c_gems from '@/assets/cover-gems.jpg';
+import c_garuda from '@/assets/cover-garuda.jpg';
+import c_joker from '@/assets/cover-joker.jpg';
+import c_jet from '@/assets/cover-jet.jpg';
+import c_rocket from '@/assets/cover-rocket.jpg';
+import c_money from '@/assets/cover-money.jpg';
+import c_sevens from '@/assets/cover-777.jpg';
+import c_wheel from '@/assets/cover-wheel.jpg';
+import c_anubis from '@/assets/cover-anubis.jpg';
+import c_aztec from '@/assets/cover-aztec.jpg';
+import c_pirate from '@/assets/cover-pirate.jpg';
+import c_western from '@/assets/cover-western.jpg';
+import c_boxing from '@/assets/cover-boxing.jpg';
+import c_lunar from '@/assets/cover-lunar.jpg';
+import c_fruit from '@/assets/cover-fruit.jpg';
+import c_mahjong from '@/assets/cover-mahjong.jpg';
+import c_fish from '@/assets/cover-fish.jpg';
+import c_biplane from '@/assets/cover-biplane.jpg';
+import c_fiesta from '@/assets/cover-fiesta.jpg';
+import c_athena from '@/assets/cover-athena.jpg';
+import c_coins from '@/assets/cover-coins.jpg';
+import c_arabian from '@/assets/cover-arabian.jpg';
+import c_elements from '@/assets/cover-elements.jpg';
+import c_ice from '@/assets/cover-ice.jpg';
+import c_cards from '@/assets/cover-cards.jpg';
 import pharaoh from '@/assets/pharaoh.jpg';
 import aviator from '@/assets/aviator.jpg';
 import luckyCat from '@/assets/lucky-cat.jpg';
 import blackjack from '@/assets/blackjack.jpg';
 import fishing from '@/assets/fishing.jpg';
 import roulette from '@/assets/roulette.jpg';
+const covers: Record<string, string> = {'aviator': aviator,'super-ace': c_ace,'wild-bounty': c_western,'super-ace-deluxe': c_ace,'super-elements': c_elements,'boxing-king': c_boxing,'fortune-gems-3': c_gems,'fortune-garuda-500': c_garuda,'magic-ace-wild-lock': c_ace,'crazy-time': c_wheel,'flyx': c_jet,'circus-joker-4096': c_joker,'fortune-gems-2': c_gems,'jetx': c_jet,'jackpot-fishing': c_fish,'fortune-king-jackpot': c_coins,'happy-fishing': c_fish,'money-coming': c_money,'treasures-of-aztec': c_aztec,'super-ace-2': c_ace,'fortune-gems': c_gems,'andar-bahar': c_cards,'anubis-wrath': c_anubis,'pirate-legends': c_pirate,'money-coming-expanded': c_money,'go-rush': c_rocket,'high-flyer': c_biplane,'golden-empire': c_aztec,'crazy-777': c_sevens,'fortune-rabbit': c_lunar,'ali-baba': c_arabian,'cny-moreways': c_lunar,'pinata-wins': c_fiesta,'wild-bandito': c_fiesta,'fruity-bonanza': c_fruit,'ice-fishing': c_ice,'mega-wheel': c_wheel,'clover-coins': c_coins,'classic-777': c_sevens,'fortune-dragon': c_lunar,'jackpot-joker': c_joker,'dragon-gems-500': c_gems,'sugar-teddy': c_fruit,'super-elements-2': c_elements,'fortune-garuda-1000': c_garuda,'poker-win': c_joker,'calavera-fiesta': c_fiesta,'lucky-jaguar': c_mahjong,'lucky-neko': c_lunar,'athena-rising': c_athena,'flyx-cash-turbo': c_jet,'super-ace-speed': c_ace,'3-super-ace': c_ace,'mahjong-ways': c_mahjong,'coin-up': c_coins,'mighty-sevens': c_sevens,'fortune-coins': c_coins};
 type Mode = 'crash' | 'slot' | 'unavailable';
 const hues: Record<string, number> = { aviator: 20, flyx: 0, jetx: 280, 'go-rush': 250, 'high-flyer': 310, 'crazy-time': 150, 'mega-wheel': 200, 'andar-bahar': 30, 'jackpot-fishing': 230, 'happy-fishing': 220, 'ice-fishing': 210, 'money-coming': 145, 'money-coming-expanded': 300, 'super-elements': 260, 'boxing-king': 25, 'magic-ace-wild-lock': 275, 'circus-joker-4096': 320, 'anubis-wrath': 70, 'pirate-legends': 15, 'super-ace-2': 140, 'super-ace': 135, 'super-ace-deluxe': 130, 'fortune-rabbit': 350, 'fruity-bonanza': 290, 'clover-coins': 150, 'jackpot-joker': 315, 'pinata-wins': 330, 'cny-moreways': 10, 'wild-bandito': 300 };
 const g = (id: string, title: string, bn: string, category: string, image: string, tag: string, provider: string, mode: Mode) =>
-  ({ id, title, bn, category, image, tag, provider, mode, hue: hues[id] ?? 75, playable: mode !== 'unavailable' });
+  ({ id, title, bn, category, image: covers[id] ?? image, tag, provider, mode, hue: hues[id] ?? 75, playable: mode !== 'unavailable' });
 export const games = [
   g('aviator', 'Aviator', 'এভিয়েটর', 'Aviator', aviator, 'HOT', 'SPRIBE', 'crash'),
   g('super-ace', 'Super Ace', 'সুপার এস', 'Slots', luckyCat, 'JILI', 'JILI', 'slot'),
