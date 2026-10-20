@@ -681,6 +681,7 @@ export type Database = {
         Returns: undefined
       }
       evaluate_referral: { Args: { _referred: string }; Returns: undefined }
+      freeze_referral_fraud: { Args: { _user: string }; Returns: undefined }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]
