@@ -65,3 +65,4 @@
 .login-social{display:flex;gap:8px;justify-content:center}
 .login-lang{display:inline-flex;align-items:center;gap:8px;margin:0 auto;color:var(--primary)}.login-lang select{background:transparent;color:var(--foreground);font-size:15px;appearance:none;outline:none}
 .bd-flag{width:26px;height:26px;border-radius:50%;background:radial-gradient(circle at 45% 50%,var(--brand-red) 0 38%,var(--brand-green) 40%)}
+.login-google{display:flex;align-items:center;justify-content:center;gap:10px;height:46px;border-radius:999px;border:1px solid var(--border);background:var(--card);color:var(--foreground);font-size:15px;font-weight:600}.login-google svg{color:var(--primary)}

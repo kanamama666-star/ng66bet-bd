@@ -16,3 +16,4 @@
 - Authorize admin reads and actions server-side through the protected user_roles table; bootstrap access only for an explicitly authorized existing account, never the first signup or editable metadata.
 - Review payments atomically with profile-first row locks and a durable ledger; pending unreserved withdrawals commit available funds without changing the displayed balance until approval.
 - Store banner images privately with anonymous reads only for active banner records; public CMS reads return browser-reachable signed image URLs.
+- Players register with username + mobile + password and log in with either; accounts get an internal non-deliverable email, so email password reset does not apply to them.

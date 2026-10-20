@@ -220,6 +220,7 @@ export type Database = {
         Row: {
           balance: number
           created_at: string
+          handle: string | null
           id: string
           phone: string
           status: string
@@ -229,6 +230,7 @@ export type Database = {
         Insert: {
           balance?: number
           created_at?: string
+          handle?: string | null
           id: string
           phone?: string
           status?: string
@@ -238,6 +240,7 @@ export type Database = {
         Update: {
           balance?: number
           created_at?: string
+          handle?: string | null
           id?: string
           phone?: string
           status?: string
@@ -318,6 +321,11 @@ export type Database = {
         }
         Returns: boolean
       }
+      player_identity_taken: {
+        Args: { _handle: string; _phone: string }
+        Returns: boolean
+      }
+      player_login_email: { Args: { _identifier: string }; Returns: string }
       review_payment_request: {
         Args: {
           _decision: string
