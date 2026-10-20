@@ -1,17 +1,5 @@
-import { createFileRoute, redirect } from '@tanstack/react-router';
-
-export const Route = createFileRoute('/admin')({
-  head: () => ({
-    meta: [
-      { title: 'Admin Panel | NG66 Velvet Vault' },
-      { name: 'description', content: 'Open the NG66 administration dashboard.' },
-      { property: 'og:title', content: 'Admin Panel | NG66 Velvet Vault' },
-      { property: 'og:description', content: 'Open the NG66 administration dashboard.' },
-      { property: 'og:type', content: 'website' },
-      { name: 'twitter:card', content: 'summary' },
-    ],
-  }),
-  beforeLoad: () => {
-    throw redirect({ href: 'https://seamless-spark-studio.lovable.app', statusCode: 302 });
-  },
-});
+import {createFileRoute,Outlet} from '@tanstack/react-router';
+import {AdminProvider,AdminGate} from '@/components/admin/admin-context';
+import {AdminShell} from '@/components/admin/admin-shell';
+export const Route=createFileRoute('/admin')({ssr:false,component:AdminLayout});
+function AdminLayout(){return <AdminProvider><AdminShell><AdminGate><Outlet/></AdminGate></AdminShell></AdminProvider>;}
