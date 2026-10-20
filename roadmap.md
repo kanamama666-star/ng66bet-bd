@@ -1,8 +1,10 @@
 # Portal rebuild
-- [ ] Add secure administrator email registration/login and verified-owner role bootstrap for the chosen email; verify access restrictions.
+- [x] Add protected VIP-level and fraud-freeze controls for administrators; preserve audit records and bonus safety checks. Validation tests passed; owner-session verification remains blocked below.
+- [x] Add secure administrator email registration/login and verified-owner role bootstrap for the chosen email; invalid login denied and credential tests passed.
+- [ ] Verify chosen owner's signed-in administrator access — blocked until kanamama666@gmail.com registers and confirms email ownership; no account with that email exists yet.
 - [x] Import all Admin Panel modules locally under `/admin` with protected admin roles.
 - [x] Connect admin actions to local players/payments/content and add Rocket throughout payment forms and gateways.
-- [ ] Verify signed-in admin authorization and player-to-admin payment/content flows — blocked: no auth users exist; first administrator account must be created and explicitly identified by the user. Signed-out gating, navigation, lobby and 16 validation tests passed.
+- [ ] Verify signed-in admin authorization and player-to-admin payment/content flows — blocked until the chosen owner registers and verifies email. Signed-out gating, navigation, lobby and validation tests passed.
 - [x] Replace the `/admin` redirect with the imported local Admin Panel.
 - [x] Rebuild mobile-first lobby, categories, banners, and account/wallet views.
 - [x] Set up Cloud profiles, authentication, transaction requests and private screenshots.

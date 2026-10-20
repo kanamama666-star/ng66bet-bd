@@ -14,6 +14,7 @@
 - Keep demo game state and credits separate from persisted wallet balances; game sampling uses random-js browserCrypto before each round.
 - Run the imported Admin Panel locally under `/admin` and use this project's generated Cloud clients for all records; do not imply synchronization with the separate source project.
 - Authorize admin reads and actions server-side through protected user_roles; bootstrap only an explicitly allowlisted email after Auth verifies ownership via lifecycle triggers, never first signup or editable metadata. Separate admin email forms from player username/phone login to preserve their distinct credentials.
+- Route manual VIP/freeze reviews through a role-checked, row-locked database function with mandatory audit reasons; ordinary profile updates must not change bonus eligibility.
 - Review payments atomically with profile-first row locks and a durable ledger; pending unreserved withdrawals commit available funds without changing the displayed balance until approval.
 - Store banner images privately with anonymous reads only for active banner records; public CMS reads return browser-reachable signed image URLs.
 - Players register with username + mobile + password and log in with either; accounts get an internal non-deliverable email, so email password reset does not apply to them.
