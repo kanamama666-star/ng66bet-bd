@@ -1,5 +1,6 @@
 # Portal rebuild
-- [ ] Add secure administrator email registration/login and verified-owner role bootstrap for the chosen email; verify access restrictions.
+- [x] Add secure administrator email registration/login and verified-owner role bootstrap for the chosen email; invalid login denied and credential tests passed.
+- [ ] Verify chosen owner's signed-in administrator access — blocked until kanamama666@gmail.com registers and confirms email ownership; no account with that email exists yet.
 - [x] Import all Admin Panel modules locally under `/admin` with protected admin roles.
 - [x] Connect admin actions to local players/payments/content and add Rocket throughout payment forms and gateways.
 - [ ] Verify signed-in admin authorization and player-to-admin payment/content flows — blocked: no auth users exist; first administrator account must be created and explicitly identified by the user. Signed-out gating, navigation, lobby and 16 validation tests passed.
