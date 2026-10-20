@@ -50,7 +50,26 @@ export const games = [
   g('classic-777', '777 Classic Style', '৭৭৭-ক্লাসিক', 'Slots', luckyCat, '', 'JDB', 'slot'),
   g('fortune-dragon', 'Fortune Dragon', 'ভাগ্যবান ড্রাগন', 'Slots', pharaoh, '', 'PG SOFT', 'slot'),
   g('jackpot-joker', 'Jackpot Joker', 'জ্যাকপট জোকার', 'Slots', luckyCat, '', 'JDB', 'slot'),
+  g('dragon-gems-500', 'Dragon Gems 500', 'ড্রাগন রত্ন ৫০০', 'Slots', pharaoh, '', 'JDB', 'slot'),
+  g('sugar-teddy', 'Sugar Teddy x1000', 'সুগার টেডি x1000', 'Slots', luckyCat, '', 'JDB', 'slot'),
+  g('super-elements-2', 'Super Elements 2', 'সুপার এলিমেন্টস 2', 'Slots', luckyCat, '', 'FA CHAI', 'slot'),
+  g('fortune-garuda-1000', 'Fortune Garuda 1000', 'ফরচুন গরুড় ১০০০', 'Slots', pharaoh, '', 'JDB', 'slot'),
+  g('poker-win', 'Poker Win', 'পোকার উইন', 'Slots', luckyCat, '', 'FA CHAI', 'slot'),
+  g('calavera-fiesta', 'Calavera Fiesta', 'কালাভেরা ফিয়েস্তা', 'Slots', luckyCat, '', 'JDB', 'slot'),
+  g('lucky-jaguar', 'Lucky Jaguar', 'লাকি জাগুয়ার', 'Slots', pharaoh, '', 'JDB', 'slot'),
+  g('lucky-neko', 'Lucky Neko', 'লাকি নেকো', 'Slots', luckyCat, 'PG', 'PG SOFT', 'slot'),
+  g('athena-rising', 'Wild Athena Rising 2048', 'ওয়াইল্ড অ্যাথেনা রাইজিং ২০৪৮', 'Slots', pharaoh, '', 'JDB', 'slot'),
+  g('flyx-cash-turbo', 'FlyX Cash Turbo', 'ফ্লাইX ক্যাশ টার্বো', 'Slots', aviator, '', 'TURBO', 'crash'),
+  g('super-ace-speed', 'Super Ace Speed', 'সুপার এস SPEED', 'Slots', luckyCat, '', 'JILI', 'slot'),
+  g('3-super-ace', '3 Super Ace', '৩ সুপার এস', 'Slots', luckyCat, '', 'TADA', 'slot'),
+  g('mahjong-ways', 'Mahjong Ways', 'Mahjong Ways', 'Slots', pharaoh, '', 'PG SOFT', 'slot'),
+  g('coin-up', 'Coin Up: Hot Fire', 'কয়েন আপ: হট ফায়ার', 'Slots', luckyCat, '', 'JDB', 'slot'),
+  g('mighty-sevens', 'Mighty Sevens', 'মাইটিসেভেনস্', 'Slots', luckyCat, '', 'JDB', 'slot'),
+  g('fortune-coins', 'Fortune Coins', 'ফরচুন কয়েন', 'Slots', pharaoh, '', 'JDB', 'slot'),
 ];
 // The first 31 entries are the Popular lineup from the reference screenshots.
 export const popularIds = new Set(games.slice(0, 31).map(x => x.id));
+// Slots tab order follows the reference Slots screenshots; other slots follow.
+const slotOrder = ['super-ace','wild-bounty','super-elements','circus-joker-4096','magic-ace-wild-lock','fortune-gems-3','super-ace-2','boxing-king','super-ace-deluxe','dragon-gems-500','fortune-garuda-500','treasures-of-aztec','anubis-wrath','sugar-teddy','pinata-wins','pirate-legends','super-elements-2','fortune-gems','golden-empire','money-coming','fortune-garuda-1000','cny-moreways','fruity-bonanza','poker-win','fortune-gems-2','calavera-fiesta','wild-bandito','lucky-jaguar','lucky-neko','clover-coins','athena-rising','flyx-cash-turbo','money-coming-expanded','crazy-777','fortune-rabbit','super-ace-speed','3-super-ace','mahjong-ways','coin-up','mighty-sevens','fortune-coins'];
+export const slotRank = (id: string) => { const i = slotOrder.indexOf(id); return i < 0 ? 999 : i; };
 export type Game = typeof games[number];
