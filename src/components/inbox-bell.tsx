@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
 import { supabase } from '@/integrations/supabase/client';
 
-export function InboxBell({ userId, onSignIn }: { userId?: string; onSignIn: () => void }) {
+export function InboxBell({ userId, onSignIn }: { userId?: string | undefined; onSignIn: () => void }) {
  const [open, setOpen] = useState(false);
  const qc = useQueryClient();
  const q = useQuery({
