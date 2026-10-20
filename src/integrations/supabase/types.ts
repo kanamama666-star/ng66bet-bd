@@ -249,6 +249,48 @@ export type Database = {
         }
         Relationships: []
       }
+      promotions: {
+        Row: {
+          active: boolean
+          category: string
+          created_at: string
+          details: string
+          headline: string
+          highlights: string[]
+          id: string
+          sort_order: number
+          subline: string
+          theme: string
+          title: string
+        }
+        Insert: {
+          active?: boolean
+          category?: string
+          created_at?: string
+          details?: string
+          headline?: string
+          highlights?: string[]
+          id?: string
+          sort_order?: number
+          subline?: string
+          theme?: string
+          title: string
+        }
+        Update: {
+          active?: boolean
+          category?: string
+          created_at?: string
+          details?: string
+          headline?: string
+          highlights?: string[]
+          id?: string
+          sort_order?: number
+          subline?: string
+          theme?: string
+          title?: string
+        }
+        Relationships: []
+      }
       site_notices: {
         Row: {
           active: boolean

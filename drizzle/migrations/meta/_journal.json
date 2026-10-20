@@ -43,6 +43,13 @@
       "when": 1792483242911,
       "tag": "0005_username_phone_login",
       "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1792483846846,
+      "tag": "0006_promotions",
+      "breakpoints": true
     }
   ]
 }
