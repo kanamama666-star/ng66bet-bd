@@ -64,6 +64,13 @@
       "when": 1792484883055,
       "tag": "0008_enable_pg_cron",
       "breakpoints": true
+    },
+    {
+      "idx": 9,
+      "version": "7",
+      "when": 1792485321653,
+      "tag": "0009_vip_rewards_engine",
+      "breakpoints": true
     }
   ]
 }
