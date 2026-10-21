@@ -106,6 +106,13 @@
       "when": 1792488941932,
       "tag": "0014_admin_vip_fraud_controls",
       "breakpoints": true
+    },
+    {
+      "idx": 15,
+      "version": "7",
+      "when": 1792556626933,
+      "tag": "0015_member_records_feedback",
+      "breakpoints": true
     }
   ]
 }
