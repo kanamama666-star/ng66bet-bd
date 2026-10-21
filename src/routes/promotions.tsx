@@ -16,6 +16,7 @@ const promotionsQuery = queryOptions({ queryKey: ['promotions'], queryFn: () => 
 const filters = [{ id: 'all', label: 'All' }, { id: 'app', label: 'APP Download' }, { id: 'partner', label: 'জোট সহযোগিতা' }] as const;
 
 export const Route = createFileRoute('/promotions')({
+ validateSearch: (search:Record<string,unknown>)=>({detail:typeof search['detail']==='string'?search['detail']:undefined}),
  head: () => ({ meta: [
   { title: 'Promotion — NG66 Bet' },
   { name: 'description', content: 'NG66 Bet promotions: রহস্য বোনাস, ভিআইপি সদস্য সুবিধা and invite-a-friend rewards.' },
@@ -32,11 +33,14 @@ function PromotionsPage() {
  const { data } = useSuspenseQuery(promotionsQuery);
  const [filter, setFilter] = useState<string>('all');
  const [open, setOpen] = useState<string | null>(null);
+ const search=Route.useSearch();
  const [detail, setDetail] = useState<string | null>(null);
- const detailPromo = data.find(p => p.id === detail);
- if (detailPromo?.theme === 'invite') return <div className="promo-page"><header className="promo-top"><button onClick={() => setDetail(null)} aria-label="Back to promotions" className="promo-back"><ChevronLeft /></button><h1>Promotion</h1></header><InviteDetail /></div>;
- if (detailPromo?.theme === 'vip') return <div className="promo-page"><header className="promo-top"><button onClick={() => setDetail(null)} aria-label="Back to promotions" className="promo-back"><ChevronLeft /></button><h1>Promotion</h1></header><VipDetail /></div>;
- if (detailPromo?.theme === 'mystery') return <div className="promo-page"><header className="promo-top"><button onClick={() => setDetail(null)} aria-label="Back to promotions" className="promo-back"><ChevronLeft /></button><h1>Promotion</h1></header><MysteryDetail /></div>;
+ const [deepLinkClosed,setDeepLinkClosed]=useState(false);
+ const selectDetail=(id:string|null)=>{setDeepLinkClosed(true);setDetail(id);};
+ const detailPromo = data.find(p => p.id === detail || (!detail&&!deepLinkClosed&&p.theme===search.detail));
+ if (detailPromo?.theme === 'invite') return <div className="promo-page"><header className="promo-top"><button onClick={() => selectDetail(null)} aria-label="Back to promotions" className="promo-back"><ChevronLeft /></button><h1>Promotion</h1></header><InviteDetail /></div>;
+ if (detailPromo?.theme === 'vip') return <div className="promo-page"><header className="promo-top"><button onClick={() => selectDetail(null)} aria-label="Back to promotions" className="promo-back"><ChevronLeft /></button><h1>Promotion</h1></header><VipDetail /></div>;
+ if (detailPromo?.theme === 'mystery') return <div className="promo-page"><header className="promo-top"><button onClick={() => selectDetail(null)} aria-label="Back to promotions" className="promo-back"><ChevronLeft /></button><h1>Promotion</h1></header><MysteryDetail /></div>;
  const list = filter === 'all' ? data : data.filter(p => p.category === filter);
  return <div className="promo-page">
   <header className="promo-top"><Link to="/" aria-label="Back to lobby" className="promo-back"><ChevronLeft /></Link><h1>Promotion</h1></header>
@@ -51,7 +55,7 @@ function PromotionsPage() {
       {p.subline && <p>{p.subline}</p>}
      </div>
     </div>
-    <div className="promo-foot"><h3>{p.title}</h3><button className="promo-more" onClick={() => p.theme === 'mystery' || p.theme === 'vip' || p.theme === 'invite' ? setDetail(p.id) : setOpen(open === p.id ? null : p.id)} aria-expanded={open === p.id}>More <ChevronRight /></button></div>
+    <div className="promo-foot"><h3>{p.title}</h3><button className="promo-more" onClick={() => p.theme === 'mystery' || p.theme === 'vip' || p.theme === 'invite' ? selectDetail(p.id) : setOpen(open === p.id ? null : p.id)} aria-expanded={open === p.id}>More <ChevronRight /></button></div>
     {open === p.id && p.details && <p className="promo-details">{p.details}</p>}
    </article>)}
   </main>
@@ -60,7 +64,7 @@ function PromotionsPage() {
    <Link to="/promotions" className="is-active"><Gift /><span>Promotion</span></Link>
    <Link to="/"><Wallet /><span>Deposit</span></Link>
    <Link to="/"><Heart /><span>Favorites</span></Link>
-   <Link to="/"><UserRound /><span>Members</span></Link>
+   <Link to="/member"><UserRound /><span>Members</span></Link>
   </nav>
  </div>;
 }
