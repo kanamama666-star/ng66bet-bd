@@ -16,7 +16,7 @@ const promotionsQuery = queryOptions({ queryKey: ['promotions'], queryFn: () => 
 const filters = [{ id: 'all', label: 'All' }, { id: 'app', label: 'APP Download' }, { id: 'partner', label: 'জোট সহযোগিতা' }] as const;
 
 export const Route = createFileRoute('/promotions')({
- validateSearch: (search:Record<string,unknown>)=>({detail:typeof search['detail']==='string'?search['detail']:undefined}),
+ validateSearch: (search:Record<string,unknown>):{detail?:string}=>(typeof search['detail']==='string'?{detail:search['detail']}:{}),
  head: () => ({ meta: [
   { title: 'Promotion — NG66 Bet' },
   { name: 'description', content: 'NG66 Bet promotions: রহস্য বোনাস, ভিআইপি সদস্য সুবিধা and invite-a-friend rewards.' },
