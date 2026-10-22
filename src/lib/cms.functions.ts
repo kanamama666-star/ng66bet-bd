@@ -28,4 +28,5 @@ export const getCms = createServerFn({ method: 'GET' }).handler(async () => {
   return {...banner,storage_path:image};
  }));
  return { notices: notices.data ?? [], banners: visibleBanners.filter(b=>b.storage_path), gateways: gateways.data ?? [] };
+ } catch (e) { console.error('CMS load failed', e); return empty; }
 });
