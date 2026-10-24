@@ -13,6 +13,7 @@ import { usePlayer } from '@/hooks/use-player';
 import { InboxBell } from '@/components/inbox-bell';
 import { cmsQuery } from '@/lib/cms-query';
 import { games,popularIds,slotRank,type Game } from '@/lib/portal-data';
+import ng66Logo from '@/assets/ng66-logo.jpg.asset.json';
 import vaultBanner from '@/assets/vault-banner.jpg';
 export const Route = createFileRoute('/')({
  head:()=>({meta:[{title:'NG66 | Velvet Vault — Game Lobby'},{name:'description',content:'Explore the Velvet Vault game lobby, transparent demo games, VIP profiles and your NG66 wallet.'},{property:'og:title',content:'NG66 | Velvet Vault — Game Lobby'},{property:'og:description',content:'Discover your next favorite game in the Velvet Vault demo lobby.'},{property:'og:type',content:'website'},{name:'twitter:card',content:'summary_large_image'}]}),
